@@ -1,3 +1,5 @@
+import { getRandomQuote } from "@/app/lib/quote";
+
 import RandomQuoteCLient from "./client";
 
 type Quote = {
@@ -7,15 +9,7 @@ type Quote = {
 }
 
 export default async function RandomQuote() {
-  const res = await fetch("https://dummyjson.com/quotes/random", {
-    cache: "no-store",
-  });
+  const quote = await getRandomQuote();
 
-  if(!res.ok) {
-    throw new Error("Failed fetch to Quote");
-  };
-
-  const quote: Quote = await res.json();
-
-  return <RandomQuoteCLient quote={quote} />
+  return <RandomQuoteCLient initialQuote={quote} />
 }
