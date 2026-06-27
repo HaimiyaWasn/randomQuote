@@ -1,4 +1,4 @@
-import { getRandomQuote } from "@/app/lib/quote";
+import { getRandomQuote } from "@/lib/quote";
 
 import RandomQuoteCLient from "./client";
 
