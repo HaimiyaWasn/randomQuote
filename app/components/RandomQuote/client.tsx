@@ -120,7 +120,7 @@ export default function RandomQuoteCLient({
                 className={loading ? "animate-spin" : ""}
                 size={20}
               />
-              {loading ? "Loading" : "New Quote"}
+              {loading ? "Loading..." : "New Quote"}
             </button>
 
             <button
