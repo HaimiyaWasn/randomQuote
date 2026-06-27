@@ -1,25 +1,33 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { AnimatePresence, motion } from "motion/react"
-import { HiMiniChatBubbleLeftRight, HiOutlineArrowPath, HiOutlineCheck, HiOutlineClipboardDocument } from "react-icons/hi2"
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import {
+  HiMiniChatBubbleLeftRight,
+  HiOutlineArrowPath,
+  HiOutlineCheck,
+  HiOutlineClipboardDocument,
+} from "react-icons/hi2";
+
+import BackgroundImage from "@/public/backgroundImage/background1.jpeg";
 
 type Quote = {
-  id: number,
-  quote: string,
-  author: string,
-}
+  id: number;
+  quote: string;
+  author: string;
+};
 
 type Props = {
-  initialQuote: Quote
-}
+  initialQuote: Quote;
+};
 
-export default function RandomQuoteCLient({
-  initialQuote,
-}: Props) {
+export default function RandomQuoteCLient({ initialQuote }: Props) {
   const [quote, setQuote] = useState(initialQuote);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isIntro, setIsIntro] = useState(true);
 
   async function randomQuote() {
     try {
@@ -34,8 +42,8 @@ export default function RandomQuoteCLient({
       setQuote(data);
     } finally {
       setLoading(false);
-    };
-  };
+    }
+  }
 
   async function copyQuote() {
     if (copied) return;
@@ -49,8 +57,30 @@ export default function RandomQuoteCLient({
     }, 1000);
   };
 
+  useEffect(() => {
+    setIsMounted(true);
+
+    const timer = setTimeout(() => {
+      setIsIntro(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <section className="flex min-h-screen items-center justify-center px-6 py-16">
+    <section className="relative flex min-h-screen overflow-hidden items-center justify-center px-6 py-16">
+      <Image 
+        src={BackgroundImage}
+        alt="Background Image"
+        fill
+        priority
+        className={`object-cover transition-all duration-1500 ease-in-out ${
+          isMounted ? "blur-0 scale-100" : "blur-lg scale-105"
+        }`}
+      />
+
+      <div className="absolute inset-0 bg-black/75" />
+
       <motion.div
         initial={{
           opacity: 0,
@@ -59,6 +89,10 @@ export default function RandomQuoteCLient({
         animate={{
           opacity: 1,
           y: 0,
+        }}
+        transition={{
+          delay: 1.5,
+          duration: 0.5
         }}
         className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-10 backdrop-blur-xl"
       >
@@ -95,10 +129,11 @@ export default function RandomQuoteCLient({
               }}
               exit={{
                 opacity: 0,
-                y: -15
+                y: -15,
               }}
               transition={{
-                duration: 0.5
+                delay: isIntro ? 2 : 0,
+                duration: 0.25,
               }}
             >
               <blockquote className="text-2xl leading-relaxed font-medium text-white md:text-3xl">
@@ -116,7 +151,7 @@ export default function RandomQuoteCLient({
               disabled={loading}
               className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white py-3 font-medium text-black transition hover:scale-102"
             >
-              <HiOutlineArrowPath 
+              <HiOutlineArrowPath
                 className={loading ? "animate-spin" : ""}
                 size={20}
               />
@@ -157,7 +192,7 @@ export default function RandomQuoteCLient({
                 >
                   {copied ? (
                     <HiOutlineCheck size={22} />
-                  ): (
+                  ) : (
                     <HiOutlineClipboardDocument size={22} />
                   )}
                 </motion.div>
@@ -167,5 +202,5 @@ export default function RandomQuoteCLient({
         </div>
       </motion.div>
     </section>
-  )
+  );
 }
